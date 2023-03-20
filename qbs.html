@@ -1,0 +1,47 @@
+<DOCTYPE! HTML>
+<html>
+<head>
+
+
+<link rel="stylesheet" href="mathstyle.css">
+<title>Quantum Base Size</title>
+
+<script>
+MathJax = {
+	tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']]
+	}
+};
+</script>
+
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+</head>
+
+<h1> The Classical and Quantum Base Size. </h1>
+
+<h3> 0. Guess the permutation! </h3>
+
+<p> Suppose $G$ is a <a href="https://en.wikipedia.org/wiki/Permutation_group">permutation group</a> acting on a set $\Omega$. An oracle is hiding a certain
+permutation $\pi$ belonging to $G$, and your goal is to figure out what is $\pi$, by asking the
+oracle questions. More precisely, "questioning the oracle" means choosing any $x \in \Omega$ and
+as an input to the oracle, who responds with $\pi(x)$.
+
+<br><br>
+
+Hopefully, by asking enough questions, you can eventually figure out $\pi$!<br><br>
+
+<b>Example.</b> Take $\Omega = \{1,2, \dots, n\}$ and let $G = S_n$ be the nth 
+<a href="https://en.wikipedia.org/wiki/Symmetric_group">symmetric group</a>. An oracle
+is hiding some permutation $\pi \in G$ which is unknown to you. You're allowed to pick a number $i \in \{1, \dots, n\}$ and use this
+input to query the oracle. How do you figure out $\pi$?
+
+</p>
+
+<body>
+
+</body>
+</html>
