@@ -1,12 +1,68 @@
-body {
-	background-color: #FFE5B4;
+html {
+	font-size: 16px;
+	line-height: 1.6em;
 }
 
-p {
+body {
+	background-color: #FFE5B4;
+	padding-bottom: 500px;
+}
+
+header {
+  position: sticky;
+  top:0;
+  padding:10px;
+  background: lightblue;
+}
+
+.section {
 	background-color: white;
 	border-radius: 15px;
 	border: 3px solid blue;
-	padding: 50px;
+	padding: 20px;
 	margin: 20px;
-	width:600px;
+	width:900px;
+}
+
+.def {
+	padding: 10px;
+	border: 3px solid lightpink;
+	border-radius:15px;
+	background-color: white;
+	margin: 20px;
+	width:750px;
+}
+
+.exercise {
+	padding: 10px;
+	border: 3px solid lightpink;
+	border-radius:15px;
+	background-color: white;
+	margin: 20px;
+	width:750px;
+
+
+}
+
+.sidenote {
+	font-size: 14px;
+	line-height: 1.2em;
+	padding: 10px;
+	border: 1px solid lightpink;
+	border-radius:15px;
+	background-color: white;
+  	float: right;
+  	width: 30%;
+  	margin-right: -33%;
+  	position: relative;
+  	transform: translateY(-20%);
+}
+
+table {
+	padding: 10px;
+}
+
+td{
+	border: 1px solid #999;
+	padding: .5rem;
 }

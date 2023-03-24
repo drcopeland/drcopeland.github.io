@@ -20,11 +20,207 @@ MathJax = {
 </script>
 
 </head>
+<body>
+<header>
 
+<a href = "index.html">Back to Home</a> &nbsp;&nbsp; <a href = "./MathStuff/SymAlgsPaper.pdf">Paper</a> &nbsp;&nbsp; 
+<a href = "https://github.com/drcopeland/symmetric-oracles">SAGE code</a>
+
+</header>
+
+<body>
 <h1> The Classical and Quantum Base Size. </h1>
+<div class="section">
+<p>
+The <strong>base size</strong> of a permutation group is a well-known number associated to a permutation group, while
+the <strong>quantum base size</strong> is a term for a much less studied number also associated to a permutation group.
 
-<h3> 0. Guess the permutation! </h3>
+<span class="sidenote">
+The term "quantum base size" was made up by me and my friend <a href="https://people.reed.edu/~jamie/">Jamie</a> while we were studying quantum learning algorithms.
+It's probably my favorite mathematical concept that I've had a hand in (re)inventing/(re)discovering! </span> 
 
+Thanks to the motivation from
+classical and quantum learning algorithms, I have many open questions about the relationship between the quantum and classical base size. Roughly speaking, the base size is the number of queries a classical computer must make to 
+solve a certain problem, and the quantum base size is the number of queries a quantum computer needs for that problem. I try to explain
+what this means in the Motivation section.<br><br>
+
+<a href="./MathStuff/SymAlgsPaper.pdf">Our first investigations into the quantum base size</a> (Section 4 in particular) <br>
+<a href="https://github.com/drcopeland/symmetric-oracles">SAGE code </a> <br><br>
+
+The material on this page is based on many years of scattered work, 
+and in collaboration with several people, including Orest Bucicovschi, Hanspeter Kraft, David Meyer, Jamie Pommersheim, and Marino Romero.
+
+I would love to get more people interested in these problems.
+
+
+If you're at all intrigued by this stuff, send me an email (even/especially if not much makes sense - I'd like to know what
+topics to write or cite to make it more accessible). <br><br>
+
+<span class="sidenote">
+
+-- This site is under construction. --
+</span>
+
+If you need to know what the quantum base size is right away, skip to the <a href="#Sec2">definitions</a>. Otherwise, enjoy the <a href="#Sec1">motivation</a>.
+</p>
+</div>
+
+
+<h2 id="Sec1"> 1. Motivation: Guess the Permutation! </h2>
+<h3>1.1 Learning Problems</h3>
+
+<div class="section">
+<p>
+
+My motivation for defining and studying the quantum base size comes from the study of <strong>learning algorithms</strong>. This is a vast subject with many
+flavors, so I ought to be more specific. The learning problems I'm talking about here involve trying to figure out some hidden, or unknown, information,
+by repeatedly asking certain questions about it. </p>
+
+<p>
+A great example is the 20 QUESTIONS game: your friend thinks of some object, person, or animal,
+and then they keep it in their memory as "hidden information". Now you play the game by asking yes/no questions, such as "Is your thing living?", or
+"Does it fit in my hand?", etc. This is a classic learning problem. In this example, your friend plays the role of <strong>oracle</strong>
+or <strong>teacher</strong>, while you are the <strong>learner.</strong>
+<span class="sidenote">These types of problems are sometimes called
+<strong>concept learning</strong>, or <strong>oracle</strong> problems. The framework is broad enough to include function appoximation
+using labeled training data (supervised learning), or policy learning through actions and rewards (reinforcement learning). Many of the
+famous quantum algorithms/subroutines, eg Grover search and phase estimation, are easily phrased as learning problems.</span> 
+Let me highlight important features of 20 QUESTIONS:
+</p>
+<ol>
+<li> There are specific constraints on what the hidden information can be.</li>
+<li> There are specific constraints on the type of question, or query, we can make. </li>
+<li> We're interested in minimizing the number of guesses needed to figure out the hidden information. </li>
+</ol>
+<p>
+Part of the game 20 QUESTIONS is the understanding that the hidden information is not any old datum, but has a specific type, namely
+is a string which represents some object, person, or animal. Similarly, a crucial aspect
+of the game is that queries are constrained to be YES/NO questions. These are the rules of the game. <br><br>
+
+In fact, a learning problem is completely specified <span class="sidenote">Technically, we should also specify the learner's goal.
+In these examples, the goal is the same: identify the hidden information. But sometimes you are interested in something weaker, like
+figuring out some property of the hidden data.</span>
+ once we know what type of information may be hidden, and what type of queries the
+learner is allowed to ask. Here are some examples:
+<br><br>
+<table>
+<tr>
+	<th>Problem</th>
+	<th>Hidden info</th>
+	<th>Example Query</th>
+	<th>Query response</th>
+</tr><tr>
+	<td>20 QUESTIONS</td>
+	<td>object, person or animal</td>
+	<td>Can it fly?</td>
+	<td>YES or NO</td>
+</tr><tr>
+	<td>BATTLESHIP</td>
+	<td>coordinates for boat locations</td>
+	<td>B7?</td>
+	<td>HIT or NO HIT</td>
+</tr><tr>
+	<td><a href="https://www.nytimes.com/games/wordle/index.html">WORDLE</a></td>
+	<td>5-letter word</td>
+	<td>Which letters does your word share with AUDIO?</td>
+	<td>Output correct  letters, <br>
+	and letters which appear but are incorrectly placed.
+</tr><tr>
+	<td>MINESWEEPER</td>
+	<td>coordinates for mine locations</td>
+	<td>What's on and around square $(x,y)$?</td>
+	<td>MINE or NOT MINE, and the number of adjacent mines</td>
+</tr><tr>
+	<td>NEEDLE IN A HAYSTACK </td>
+	<td>Number from 1 to 100</td>
+	<td>Is your number 46?</td>
+	<td>YES or NO</td>
+</tr><tr>
+	<td>GUESS THE PERMUTATION!</td>
+	<td>Permutation $\pi \in G$, where $G$ is a permutation group acting on $\{1,\dots,n\}$</td>
+	<td>What is $\pi(3)$?</td>
+	<td>A number in $\{1, \dots, n\}$.</td>
+</table><span class="sidenote" style="transform: translateY(-200px)">There are of course many more "serious" applications of this framework, but it's public knowledge that my true desire is knowing the best possible way to beat my younger brother at
+MASTERMIND.</span>
+<br><br>
+The goal of a learner is to discover the hidden information, using as few
+queries as possible. The minimum number of queries required to solve a learning problem is called the <strong>query complexity</strong> of the
+learning problem (though some people prefer to use the language of "samples" and "sample complexity"). The query complexity is one measure
+of the "difficulty" of an algorithmic task, like time complexity (number of steps required) and space complexity (amount of physical memory
+required). My research has focused on query complexity, but there are interesting tradeoffs and interactions between these notions. A simple example is that the
+the query complexity provides a lower bound for time complexity. In many problems, our analysis lets us make quantitative statements about
+the tradeoff between the amount of workspace memory accessible to a quantum algorithm and the number of queries required to solve a problem.
+<span class="sidenote">See e.g. Section 6 of <a href="./MathStuff/https://arxiv.org/abs/1503.05548">my paper</a> with Orest Bucicovschi, David Meyer, and Jamie.
+
+<br><br> 
+
+<h3> Mini Case Study 1: WORDLE </h3>
+It's not easy to figure out the query
+complexity of a given game! Just think about WORDLE. How many guesses does an optimal strategy require? Not so obvious! Turns out, as Laurent Poirrier
+<a href="https://www.poirrier.ca/notes/wordle/">figured out</a> (with 1000 hours of CPU time!!), there is a WORDLE strategy that always
+works and uses no more than 6 guesses. This strategy gives us an <strong>upper bound</strong> for query complexity: <br><br>
+<center>
+(worst case) query complexity $\leq 6$.
+</center> <br>
+
+<span class="sidenote">Note we are talking about <strong>worst case</strong> query complexity, since we are asking for the minimum number of guesses that
+ALWAYS work, no matter what the hidden word is. There is also a notion of <strong>average case</strong> query complexity. For instance,
+an optimal algorithm for WORDLE uses approximately 3.42 queries on average. </span>
+
+Still, this leaves open the question: can we do any better? Again, this is an interesting non-trivial math problem 
+<a href="https://alexpeattie.com/blog/establishing-minimum-guesses-wordle/">solved by</a> Alex Peattie, who showed that 5 queries are
+actually required in the worst case! This proves a <strong>lower bound</strong> for the query complexity: <br><br>
+<center>
+(worst case) query complexity $> 5$. <br>
+</center> <br>
+Together with the previous inequality, we conclude <br>
+<center>
+(worst case) query complexity $= 6$.
+</center> <br>
+Nice! Now we know how many guesses we need for WORDLE. This is exactly the very scientific, fool-proof blueprint I use for analyzing other learning problems: 
+<ol>
+<li>Come up with algorithms for the problem to get an <strong>upper bound</strong> on query complexity.</li>
+<li>Do some ingenious mathematics to prove some number of queries are required to get a <strong>lower bound</strong> on query complexity.</li>
+<li>Oscillate wildly between Steps 1 and 2, improving whenever possible, until upper and lower bounds collide.</li>
+
+</ol>
+
+Once the bounds collide, you know the final algorithm you have found in Step 1 is <strong>optimal</strong>, which is gratifying indeed.
+Sometimes, after spending a lot of time and energy bouncing between steps 1 and 2, you may start to wonder whether they are actually difficult problems,
+or if you are just slow at solving tricky math problems. Turns out this question can also be formalized and answered, which is very interesting!
+For instance, Daniel Lokshtanov and Bernardo Subercaseaux generalized WORDLE to depend on some parameters (such as the size of the dictionary),
+and <a href="https://arxiv.org/abs/2203.16713">proved that</a> the task of computing the query complexity is NP-hard!
+
+<h3>Mini Case Study 2: NEEDLE IN A HAYSTACK, Grover's algorithm, and quantum speed-up. </h3>
+<p>
+Finding strategies for learning problems, and deciding whether they are optimal, is difficult, even for simple games like WORDLE.
+This is one reason I study even simpler problems. Another reason to study very simple problems, besides an inability to do any other type of problem, is they sometimes
+make useful subroutines for more complicated algorithms. 
+</p>
+<p>
+The NEEDLE IN A HAYSTACK is a good example of this.
+<span class="sidenote">The NEEDLE IN A HAYSTACK problem is more commonly known as "unstructured search".</span> On the face it may look too simple to be interesting.
+On the other hand, its simplicity makes it applicable to many settings. Remarkably, quantum computers offer a significant advantage (quadratic speedup)
+when playing this game (more on that in a moment). I think it's uncontroversial to say that the quantum algorithm to solve this problem, known as Grover's algorithm,
+is a fundamental subroutine that will be implemented in most sufficiently complex pieces of quantum software. But before anything quantum,
+try an exercise:
+</p>
+
+<div class="exercise">
+<b>Exercise.</b> Recall the NEEDLE IN A HAYSTACK problem: the oracle is hiding a number from $1$ to $1000$, and all you can do 
+in one query is ask "Is the number [blank]?". 
+<ol>
+<li>What's the worst case query complexity of this problem?</li>
+<li>What's the average case query
+complexity? (For the average case complexity, assume the hidden information is distributed uniformly.)</li>
+</ol>
+<b>Solution.</b> [Click to show]
+
+
+</div>
+
+
+<h3>Not so Mini Case Study 3: GUESS THE PERMUTATION! and base size </h3>
 <p> Suppose $G$ is a <a href="https://en.wikipedia.org/wiki/Permutation_group">permutation group</a> acting on a set $\Omega$. An oracle is hiding a certain
 permutation $\pi$ belonging to $G$, and your goal is to figure out what is $\pi$, by asking the
 oracle questions. More precisely, "questioning the oracle" means choosing any $x \in \Omega$ and
@@ -40,8 +236,59 @@ is hiding some permutation $\pi \in G$ which is unknown to you. You're allowed t
 input to query the oracle. How do you figure out $\pi$?
 
 </p>
+</div>
+<h3 id="Sec2"> 2. Mathematical Definitions </h3>
+<div class="section">
+<p>
+<b id="def-base-size">Definition.</b> Suppose $G$ is a group acting on the (finite) set $\Omega$. A <strong>base</strong>
+for $\Omega$ is a subset $X \subseteq \Omega$ whose pointwise stabilizer is trivial. The <strong>base size</strong> of $\Omega$ is the size
+of a smallest base. <br><br>
 
-<body>
+The base size is denoted $b_G(\Omega)$. <br><br>
 
+For instance, a minimal base for $S_n$ is $\{1,2, \dots, n-1\}$ so $S_n$ has base size $n-1$. The alternating group $A_n$ has base size $n-2$.
+As fas as I know, the earliest published use of the base size is due to <a href="#bib-bochert">Bochert in 1889</a>, who proved the result that any primitive
+permutation group acting on $n$ elements either contains the whole alternating group, or its order is at most $n(n-1) \cdots \left(\lfloor \frac{n+1}{2} \rfloor + 1 \right)$.
+In the last 50 years, bases have played an important role in computational group theory, since a small base provides an efficient encoding
+for group elements. In 1992 <a href="#bib-blaha">Blaha proved</a> that computing the base size is NP-hard.
+<br><br>
+<b id="def-quantum-base-size">Definition.</b> Suppose $G$ is a permutation group acting on $\Omega$. The <strong>quantum base size</strong> is the
+minimum number $t$ such that the vector space $(\mathbb{C}\Omega)^{\otimes t}$ contains at least one copy of each irrep of $G$.
+
+</p>
+</div>
+<h3> 3. Zoo of Examples </h3>
+
+<h3> 4. Open Questions </h3>
+<div class="section">
+<p>
+Here are some open questions I have related to quantum learning algorithms and the quantum base size, roughly sorted by generality. I have included a "predicted difficulty level" *, **, and ***
+that reflects how technically difficult I imagine the problem to be, as well as its open-endedness. The date added to the document is
+in blue.
+
+<h3> General questions </h3>
+<ol>
+	<li>(*) Characterize learning problems with non-adaptive optimal classical algorithms. <font color="blue"> 3.23.2023 </font></li>
+	<li>(**) Characterize learning problems with non-adaptive optimal quantum algorithms. <font color="blue"> 3.23.2023 </font> </li>
+	<li>(***) What is the relationship between base size and quantum base size? <font color="blue"> 3.23.2023 </font> </li>
+	
+</ol>
+
+<h3> Specific questions </h3>
+<ol>
+	<li> (**) Compute base size and quantum base size for families of permutation groups of the form $G \wr S_k$. <font color="blue"> 3.23.2023 </font>
+	<li> (**) Compute base size and quantum base size for families of finite groups of Lie type, eg $PSL_n(\mathbb{F}_p)$. <font color="blue"> 3.23.2023 </font>
+</ol>
+</p>
+</div>
+
+<h3 id="bib"> 5. Bibliography</h3>
+<div id="bib-bochert">
+1. Bochert, A. &Uuml;ber die Transitivit&auml;tsgrenze der Substitutionengruppen, welche die Alternierende ihres Grades nicht einhalten.
+<italic> Math. Ann. </italic> <b> 33</b>, 1889, 572-583.
+</div>
+<div id="bib-blaha">
+2. Blaha, Kenneth. Minimum Bases for Permutation Groups: The Greedy Appoximation. <italic>Journal of Algorithms.</italic> <b>13</b>, 1992, 297-306.
+</div>
 </body>
 </html>
