@@ -145,7 +145,8 @@ MASTERMIND.</span>
 <br><br>
 The goal of a learner is to discover the hidden information, using as few
 queries as possible. The minimum number of queries required to solve a learning problem is called the <strong>query complexity</strong> of the
-learning problem (though some people prefer to use the language of "samples" and "sample complexity"). The query complexity is one measure
+learning problem (though some people prefer to use the language of "samples" and "sample complexity"). <span class="sidenote">Don't forget: the query complexity is
+the number of queries used by the BEST POSSIBLE algorithm (not just the first algorithm you think of).</span> The query complexity is one measure
 of the "difficulty" of an algorithmic task, like time complexity (number of steps required) and space complexity (amount of physical memory
 required). My research has focused on query complexity, but there are interesting tradeoffs and interactions between these notions. A simple example is that the
 the query complexity provides a lower bound for time complexity. In many problems, our analysis lets us make quantitative statements about
@@ -153,6 +154,8 @@ the tradeoff between the amount of workspace memory accessible to a quantum algo
 <span class="sidenote">See e.g. Section 6 of <a href="./MathStuff/https://arxiv.org/abs/1503.05548">my paper</a> with Orest Bucicovschi, David Meyer, and Jamie.
 
 <br><br> 
+
+<hr>
 
 <h3> Mini Case Study 1: WORDLE </h3>
 It's not easy to figure out the query
@@ -191,6 +194,8 @@ or if you are just slow at solving tricky math problems. Turns out this question
 For instance, Daniel Lokshtanov and Bernardo Subercaseaux generalized WORDLE to depend on some parameters (such as the size of the dictionary),
 and <a href="https://arxiv.org/abs/2203.16713">proved that</a> the task of computing the query complexity is NP-hard!
 
+<hr>
+
 <h3>Mini Case Study 2: NEEDLE IN A HAYSTACK, Grover's algorithm, and quantum speed-up. </h3>
 <p>
 Finding strategies for learning problems, and deciding whether they are optimal, is difficult, even for simple games like WORDLE.
@@ -207,19 +212,34 @@ try an exercise:
 </p>
 
 <div class="exercise">
-<b>Exercise.</b> Recall the NEEDLE IN A HAYSTACK problem: the oracle is hiding a number from $1$ to $1000$, and all you can do 
+<b>Exercise.</b> Recall the NEEDLE IN A HAYSTACK problem: the oracle is hiding a number from $1$ to $100$, and all you can do 
 in one query is ask "Is the number [blank]?". 
 <ol>
 <li>What's the worst case query complexity of this problem?</li>
 <li>What's the average case query
 complexity? (For the average case complexity, assume the hidden information is distributed uniformly.)</li>
 </ol>
-<b>Solution.</b> [Click to show]
+<b>Solution.</b> <span id="exercise1" onclick="show1()">[Click to show.]</span>
+<script>
+function show1() {
+	var x = document.getElementById("exercise1");
+	x.innerHTML = `The best possible algorithm for NEEDLE IN A HAYSTACK is just making random guesses, but making sure not to repeat guesses.
+	In the worst case, you keep guessing wrong. However, if you guess wrong 99 times in a row, then you can use process of elimination
+	to deduce the hidden number! So the worst case query complexity is 99 queries. <br><br>
+	
+	For the average case complexity, we compute the expected number of queries until we guess correctly to be roughly 50. <span class="sidenote">Rigorizing this 
+	is left to the reader ;) </span>`;
+}
 
+</script>
 
 </div>
 
+For asymptotic analysis, we let the NEEDLE IN A HAYSTACK game depend on $N$ (we had $N = 100$ in our case). Then the worst case query complexity
+is $N-1$, and the average case query complexity is roughly $N/2$. Asymptotically these are both $O(N)$. <br><br>
 
+
+<hr>
 <h3>Not so Mini Case Study 3: GUESS THE PERMUTATION! and base size </h3>
 <p> Suppose $G$ is a <a href="https://en.wikipedia.org/wiki/Permutation_group">permutation group</a> acting on a set $\Omega$. An oracle is hiding a certain
 permutation $\pi$ belonging to $G$, and your goal is to figure out what is $\pi$, by asking the
@@ -285,10 +305,15 @@ in blue.
 <h3 id="bib"> 5. Bibliography</h3>
 <div id="bib-bochert">
 1. Bochert, A. &Uuml;ber die Transitivit&auml;tsgrenze der Substitutionengruppen, welche die Alternierende ihres Grades nicht einhalten.
-<italic> Math. Ann. </italic> <b> 33</b>, 1889, 572-583.
+<i> Math. Ann. </i>,<b> 33</b>, 1889, 572-583.
 </div>
 <div id="bib-blaha">
-2. Blaha, Kenneth. Minimum Bases for Permutation Groups: The Greedy Appoximation. <italic>Journal of Algorithms.</italic> <b>13</b>, 1992, 297-306.
+2. Blaha, Kenneth. Minimum Bases for Permutation Groups: The Greedy Appoximation. <i>Journal of Algorithms.</i> <b>13</b>, 1992, 297-306.
+</div>
+<div id="bib-grover">
+3. Grover, Lov. Quantum Mechanics helps in searching for a needle in a haystack. <i>Phys. Rev. Letters.</i> <b>79</b>, 2, 1997.
+<a href="https://arxiv.org/abs/quant-ph/9706033">on arxiv.</a>
+
 </div>
 </body>
 </html>
